@@ -131,7 +131,7 @@ class ContinuousGenerator:
         random.shuffle(same_folder)
         random.shuffle(other_folders)
 
-        selected_links = same_folder[:3] + other_folders[:2]
+        selected_links = same_folder[:7] + other_folders[:2]
 
         links_html = (
             "<div style='margin-top:50px;padding:20px;border-top:2px solid #eee'>"
@@ -198,3 +198,4 @@ class ContinuousGenerator:
 if __name__ == "__main__":
     generator = ContinuousGenerator()
     generator.run_single_cycle(count=200)
+
