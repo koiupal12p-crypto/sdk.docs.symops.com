@@ -197,5 +197,4 @@ class ContinuousGenerator:
 
 if __name__ == "__main__":
     generator = ContinuousGenerator()
-    generator.run_single_cycle(count=200)
-
+    generator.run_single_cycle(count=100)
