@@ -4,11 +4,11 @@ on:
   workflow_run:
     workflows: ["Auto-Post Engine"]
     types:
-      - completed  # يشغّل بعد أي تشغيل ناجح للـ Auto-Post Engine
+      - completed
 
 jobs:
   build:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }} # فقط إذا نجح الـ workflow السابق
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -31,13 +31,21 @@ jobs:
         run: |
           pip install -r requirements.txt || echo "No requirements file found"
 
+      # --- الخطوة الجديدة هنا ---
+      - name: Inject SEO Links into HTML files
+        run: python inject_links.py  # تأكد أن هذا هو اسم الملف الذي حفظته في الجذر
+
       - name: Build sitemap
         run: python build_map.py
 
-      - name: Commit and push sitemap
+      - name: Commit and push changes
         run: |
-          git config user.name "Map Bot"
-          git config user.email "map@github.com"
-          git add *.xml
-          git diff --cached --quiet || git commit -m "SEO: update site map"
+          git config user.name "SEO Bot"
+          git config user.email "seo-bot@github.com"
+          # إضافة ملفات الـ HTML المعدلة والـ XML
+          git add *.html *.xml
+          # البحث في المجلدات الفرعية أيضاً
+          git add fqa/**/*.html qrl/**/*.html vit/**/*.html || echo "No subfolder files to add"
+          
+          git diff --cached --quiet || git commit -m "SEO: Injected links and updated sitemap"
           git push origin main
