@@ -2,7 +2,7 @@ name: Auto-Post Engine
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '0 * * * *' # تشغيل كل ساعة (يفضل تقليل التكرار لتجنب الحظر)
   workflow_dispatch:
 
 jobs:
@@ -18,6 +18,9 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: Install Dependencies
+        run: pip install requests beautifulsoup4
+
       - name: Run Generator
         run: python creater.py
 
@@ -26,5 +29,5 @@ jobs:
           git config user.name "GitHub Bot"
           git config user.email "actions@github.com"
           git add .
-          git commit -m "auto generate pages" || echo "no changes"
+          git commit -m "Add new news articles and update DB" || echo "no changes"
           git push
