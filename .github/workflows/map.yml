@@ -31,21 +31,18 @@ jobs:
         run: |
           pip install -r requirements.txt || echo "No requirements file found"
 
-      # --- الخطوة الجديدة هنا ---
-      - name: Inject SEO Links into HTML files
-        run: python inject_links.py  # تأكد أن هذا هو اسم الملف الذي حفظته في الجذر
-
       - name: Build sitemap
-        run: python build_map.py
+        run: python build_map.py  # تأكد أن هذا هو السكريبت الوحيد الذي يعمل هنا
 
-      - name: Commit and push changes
+      - name: Commit and push sitemap
         run: |
-          git config user.name "SEO Bot"
-          git config user.email "seo-bot@github.com"
-          # إضافة ملفات الـ HTML المعدلة والـ XML
-          git add *.html *.xml
-          # البحث في المجلدات الفرعية أيضاً
-          git add fqa/**/*.html qrl/**/*.html vit/**/*.html || echo "No subfolder files to add"
-          
-          git diff --cached --quiet || git commit -m "SEO: Injected links and updated sitemap"
+          git config user.name "Map Bot"
+          git config user.email "map@github.com"
+          git add *.xml
+          git diff --cached --quiet || git commit -m "SEO: update site map"
           git push origin main
+
+      - name: Ping Search Engines
+        run: |
+          # لاحظ استخدام map-root.xml لأنه الفهرس الرئيسي الجديد
+          curl "https://www.bing.com/ping?sitemap=https://${{ secrets.DOMAIN }}/map-root.xml" || echo "Ping failed"
